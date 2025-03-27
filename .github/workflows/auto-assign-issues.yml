@@ -68,11 +68,12 @@ jobs:
 
         echo "Here's some additional info: Issue number: $ISSUE_NUMBER; the repo name: $REPO_NAME; the general repo info: $REPO_INFO"
 
-        # Try to get Node ID for issue
+        # Try to get Node ID for issue       
         NODE_ID_RESULTS=$(curl -X POST \
           -H "Authorization: bearer $GITHUB_TOKEN" \
-          -d '{"query": "query { repository(owner: \\\"$REPO_OWNER\\\", name: \\\"$REPO_NAME\\\") { issue(number: $ISSUE_NUMBER) { id } } }"}' \
+          -d "{\"query\": \"query { repository(owner: \\\"$REPO_OWNER\\\", name: \\\"$REPO_NAME\\\") { issue(number: $ISSUE_NUMBER) { id } } }\"}" \
           https://api.github.com/graphql | jq -r '.data.repository.issue.id')
+
 
         echo "The results of getting the node ID are: $NODE_ID_RESULTS"
         
