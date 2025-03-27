@@ -48,6 +48,8 @@ jobs:
           "https://api.github.com/orgs/$ORG_NAME/projects" | \
           jq -r --arg PROJECT_NAME "$PROJECT_NAME" '.[] | select(.name == $PROJECT_NAME) | .id')
 
+        echo "Project ID: $PROJECT_ID"
+
         # Check if project exists
         if [ "$PROJECT_ID" == "null" ]; then
           echo "Project '$PROJECT_NAME' not found. Exiting."
