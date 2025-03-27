@@ -62,10 +62,10 @@ jobs:
         fi
         
         # Add the issue to the project board
-        curl -X POST \
+        curl --request POST \
+          --url https://api.github.com/graphql \
           -H "Authorization: bearer $GITHUB_TOKEN" \
-          -d "{\"content_type\":\"Issue\",\"content_id\":$ISSUE_NUMBER}" \
-          "https://api.github.com/projects/v2/columns/cards"  # Use the new project column cards API
+          --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \\\"$PROJECT_ID\\\" contentId: \\\"$ISSUE_NUMBER\\\"}) {item {id}}}"}'
 
         echo "Issue #$ISSUE_NUMBER added to $PROJECT_NAME for user $USER."
 
