@@ -43,25 +43,13 @@ jobs:
         echo "Looking for project: $PROJECT_NAME"
         
         # Define the GraphQL query to retrieve the project ID
-        QUERY=$(cat <<EOF
-        {
-          organization(login: "$ORG_NAME") {
-            projectsV2(first: 100) {
-              nodes {
-                id
-                title
-              }
-            }
-          }
-        }
-EOF
-        )
+        QUERY="{\"query\":\"{organization(login: \\\"$ORG_NAME\\\") {projectsV2(first: 100) {nodes {id title}}}}\"}"
 
         # Send the GraphQL query to GitHub API and parse the response
         PROJECT_ID=$(curl -s \
           -H "Authorization: bearer $GITHUB_TOKEN" \
           -X POST \
-          -d "{\"query\": \"$QUERY\"}" \
+          -d "$QUERY" \
           "https://api.github.com/graphql" | \
           jq -r --arg PROJECT_NAME "$PROJECT_NAME" '.data.organization.projectsV2.nodes[] | select(.title == $PROJECT_NAME) | .id')
 
@@ -80,4 +68,5 @@ EOF
           "https://api.github.com/projects/v2/columns/cards"  # Use the new project column cards API
 
         echo "Issue #$ISSUE_NUMBER added to $PROJECT_NAME for user $USER."
+
 
