@@ -60,6 +60,27 @@ jobs:
           echo "Project '$PROJECT_NAME' not found. Exiting."
           exit 1
         fi
+
+        # Check some other misc. info
+        REPO_INFO=$(echo $GITHUB_REPOSITORY)
+        REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
+
+        echo "Here's some additional info: Issue number: $ISSUE_NUMBER; the repo name: $REPO_NAME; the general repo info: $REPO_INFO"
+
+        # Try to get Node ID for issue
+        curl -X POST https://api.github.com/graphql \
+          -H "Authorization: Bearer $TOKEN" \
+          -d "{
+            \"query\": \"
+            {
+              repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") {
+                issue(number: $ISSUE_NUMBER) {
+                  id
+                }
+              }
+            }\"
+          }"
+
         
         # Add the issue to the project board
         curl --request POST \
