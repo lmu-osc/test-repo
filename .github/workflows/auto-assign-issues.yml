@@ -43,7 +43,7 @@ jobs:
         echo "Looking for project: $PROJECT_NAME"
         
         # Define the GraphQL query to retrieve the project ID
-        QUERY="{\"query\":\"{organization(login: \\\"$ORG_NAME\\\") {projectsV2(first: 100) {nodes {id title}}}}\"}"
+        QUERY="{\"query\": \"query { organization(login: \\\"$ORG_NAME\\\") {projectsV2(first: 20) {nodes {id title}}}}\"}"
 
         # Send the GraphQL query to GitHub API and parse the response
         PROJECT_ID=$(curl -s \
