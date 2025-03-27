@@ -80,7 +80,7 @@ jobs:
         curl --request POST \
           --url https://api.github.com/graphql \
           -H "Authorization: bearer $GITHUB_TOKEN" \
-          --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \"$PROJECT_ID\" contentId: \"$NODE_ID_RESULTS\"}) {item {id}}}"}'
+          --data '{"query":"mutation {addProjectV2ItemById(input: {projectId: \\\"$PROJECT_ID\\\" contentId: \\\"$NODE_ID_RESULTS\\\"}) {item {id}}}"}'
 
         echo "Issue #$ISSUE_NUMBER with Node ID $NODE_ID_RESULTS added to $PROJECT_NAME for user $USER."
 
