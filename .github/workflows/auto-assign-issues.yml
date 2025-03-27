@@ -69,7 +69,7 @@ jobs:
         echo "Here's some additional info: Issue number: $ISSUE_NUMBER; the repo name: $REPO_NAME; the general repo info: $REPO_INFO"
 
         # Try to get Node ID for issue
-        curl -X POST https://api.github.com/graphql \
+        NODE_ID_RESULTS=curl -X POST https://api.github.com/graphql \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           -d "{
             \"query\": \"
@@ -82,6 +82,7 @@ jobs:
             }\"
           }"
 
+        echo "The results of getting the node ID are: $NODE_ID_RESULTS"
         
         # Add the issue to the project board
         curl --request POST \
