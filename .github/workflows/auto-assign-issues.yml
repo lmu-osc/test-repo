@@ -72,7 +72,7 @@ jobs:
         NODE_ID_RESULTS=$(curl -X POST \
           -H "Authorization: bearer $GITHUB_TOKEN" \
           -d '{"query": "query { repository(owner: \"lmu-osc\", name: \"test-repo\") { issue(number: 1) { id } } }"}' \
-          https://api.github.com/graphql)
+          https://api.github.com/graphql | jq -r '.data.repository.issue.id')
 
         echo "The results of getting the node ID are: $NODE_ID_RESULTS"
         
