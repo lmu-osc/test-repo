@@ -1,0 +1,63 @@
+name: Auto-Add Issues to User Project
+
+on:
+  issues:
+    types:
+      - assigned
+      - unassigned
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v3
+
+    - name: Get user from issue
+      id: get_user
+      run: |
+        echo "::set-output name=user::$(jq --raw-output .issue.assignee.login $GITHUB_EVENT_PATH)"
+        
+    - name: Check if assignee is set
+      run: |
+        if [ -z "${{ steps.get_user.outputs.user }}" ]; then
+          echo "No user assigned to the issue. Skipping project update."
+          exit 0
+        fi
+
+    - name: Add Issue to User's Project Board
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        USER=${{ steps.get_user.outputs.user }}
+        REPO=${{ github.repository }}
+        ISSUE_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
+        
+        # Organization name where projects are hosted
+        ORG_NAME="lmu-osc"
+        
+        # Construct the project name dynamically based on the user
+        PROJECT_NAME="${USER}'s Tasks"
+        
+        echo "Looking for project: $PROJECT_NAME"
+        
+        # Get the project ID by searching for the project within the organization
+        PROJECT_ID=$(curl -s \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/orgs/$ORG_NAME/projects" | \
+          jq -r --arg PROJECT_NAME "$PROJECT_NAME" '.[] | select(.name == $PROJECT_NAME) | .id')
+
+        # Check if project exists
+        if [ "$PROJECT_ID" == "null" ]; then
+          echo "Project '$PROJECT_NAME' not found. Exiting."
+          exit 1
+        fi
+        
+        # Add the issue to the project board
+        curl -X POST \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -d "{\"content_type\":\"Issue\",\"content_id\":$ISSUE_NUMBER}" \
+          "https://api.github.com/projects/$PROJECT_ID/columns/cards"
+          
+        echo "Issue #$ISSUE_NUMBER added to $PROJECT_NAME for user $USER."
