@@ -42,11 +42,28 @@ jobs:
         
         echo "Looking for project: $PROJECT_NAME"
         
-        # Get the project ID by searching for the project within the organization
+        # Define the GraphQL query to retrieve the project ID
+        QUERY=$(cat <<EOF
+        {
+          organization(login: "$ORG_NAME") {
+            projectsV2(first: 100) {
+              nodes {
+                id
+                title
+              }
+            }
+          }
+        }
+EOF
+        )
+
+        # Send the GraphQL query to GitHub API and parse the response
         PROJECT_ID=$(curl -s \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          "https://api.github.com/orgs/$ORG_NAME/projects" | \
-          jq -r --arg PROJECT_NAME "$PROJECT_NAME" '.[] | select(.name == $PROJECT_NAME) | .id')
+          -H "Authorization: bearer $GITHUB_TOKEN" \
+          -X POST \
+          -d "{\"query\": \"$QUERY\"}" \
+          "https://api.github.com/graphql" | \
+          jq -r --arg PROJECT_NAME "$PROJECT_NAME" '.data.organization.projectsV2.nodes[] | select(.title == $PROJECT_NAME) | .id')
 
         echo "Project ID: $PROJECT_ID"
 
@@ -58,8 +75,9 @@ jobs:
         
         # Add the issue to the project board
         curl -X POST \
-          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Authorization: bearer $GITHUB_TOKEN" \
           -d "{\"content_type\":\"Issue\",\"content_id\":$ISSUE_NUMBER}" \
-          "https://api.github.com/projects/$PROJECT_ID/columns/cards"
-          
+          "https://api.github.com/projects/v2/columns/cards"  # Use the new project column cards API
+
         echo "Issue #$ISSUE_NUMBER added to $PROJECT_NAME for user $USER."
+
