@@ -69,18 +69,10 @@ jobs:
         echo "Here's some additional info: Issue number: $ISSUE_NUMBER; the repo name: $REPO_NAME; the general repo info: $REPO_INFO"
 
         # Try to get Node ID for issue
-        NODE_ID_RESULTS=curl -X POST https://api.github.com/graphql \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -d "{
-            \"query\": \"
-            {
-              repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") {
-                issue(number: $ISSUE_NUMBER) {
-                  id
-                }
-              }
-            }\"
-          }"
+        NODE_ID_RESULTS=curl -X POST \
+          -H "Authorization: bearer $GITHUB_TOKEN" \
+          -d '{"query": "query { repository(owner: \"lmu-osc\", name: \"test-repo\") { issue(number: 1) { id } } }"}' \
+          https://api.github.com/graphql
 
         echo "The results of getting the node ID are: $NODE_ID_RESULTS"
         
