@@ -28,7 +28,7 @@ jobs:
 
     - name: Add Issue to User's Project Board
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUES_PAT }}
       run: |
         USER=${{ steps.get_user.outputs.user }}
         REPO=${{ github.repository }}
