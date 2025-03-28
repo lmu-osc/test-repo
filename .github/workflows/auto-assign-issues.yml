@@ -27,8 +27,8 @@ jobs:
       run: |
         # Read the assignees from the previous step and convert to an array
         ASSIGNEES="${{ steps.get_assignees.outputs.assignees }}"
-        # Convert the assignees into an array by splitting by newlines
-        IFS=$'\n' read -r -a ASSIGNEES_ARRAY <<< "$ASSIGNEES"
+        # Turn the newline-separated string into an array by splitting at newlines
+        mapfile -t ASSIGNEES_ARRAY <<< "$ASSIGNEES"
         # Output the array as a space-separated string
         echo "::set-output name=assignees_array::${ASSIGNEES_ARRAY[*]}"
         # Print the assignees for debugging
