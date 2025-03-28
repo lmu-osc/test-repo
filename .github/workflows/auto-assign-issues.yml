@@ -33,16 +33,16 @@ jobs:
         # Read the assignees from the previous step and convert to an array
         ASSIGNEES="${{ steps.get_assignees.outputs.assignees }}"
         # Convert the assignees to a space-separated array
-        ASSIGNEES_ARRAY=($ASSIGNEES)
-        echo "::set-output name=assignees_array::${ASSIGNEES_ARRAY[@]}"
-        echo "Assignees: ${ASSIGNEES_ARRAY[@]}"
+        IFS=' ' read -r -a ASSIGNEES_ARRAY <<< "$ASSIGNEES"
+        echo "::set-output name=assignees_array::${ASSIGNEES_ARRAY[*]}"
+        echo "Assignees: ${ASSIGNEES_ARRAY[*]}"
 
     - name: Add Issue to each User's Project Board
       env:
         GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUES_PAT }}
       run: |
         # Fetch the list of assignees from the previous step
-        ASSIGNEES_ARRAY=(${steps.init-assignees.outputs.assignees_array})
+        ASSIGNEES_ARRAY=(${{ steps.init-assignees.outputs.assignees_array }})
         REPO=${{ github.repository }}
         ISSUE_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
         
@@ -91,6 +91,7 @@ jobs:
 
           echo "Issue #$ISSUE_NUMBER with Node ID $NODE_ID_RESULTS added to $PROJECT_NAME for user $USER."
         done
+
 
 
 
