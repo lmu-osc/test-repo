@@ -75,6 +75,11 @@ jobs:
             continue
           fi
 
+
+          # List info before getting node ID
+
+          echo "The repo owner is $REPO_OWNER, the repo name is $REPO_NAME, and the issue number is $ISSUE_NUMBER." 
+
           # Get Node ID for the issue
           NODE_ID_RESULTS=$(curl -X POST \
             -H "Authorization: bearer $GITHUB_TOKEN" \
