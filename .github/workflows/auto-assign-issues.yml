@@ -19,6 +19,7 @@ jobs:
         # Extract the assignees from the issue and format as a space-separated string
         ASSIGNEES=$(jq --raw-output '.issue.assignees[].login' $GITHUB_EVENT_PATH)
         echo "::set-output name=assignees::${ASSIGNEES}"
+        echo "Assignees: ${ASSIGNEES}"
 
     - name: Check if assignees are set
       run: |
