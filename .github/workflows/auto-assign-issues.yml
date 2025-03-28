@@ -43,11 +43,17 @@ jobs:
       run: |
         # Fetch the list of assignees from the previous step
         ASSIGNEES_ARRAY=(${{ steps.init-assignees.outputs.assignees_array }})
-        REPO_NAME=${{ github.repository }}
+
+        # Get the repository information
+        # Extract the repository name and owner from the GITHUB_REPOSITORY environment variable
+        # The GITHUB_REPOSITORY variable is in the format "owner/repo"
+        # The GITHUB_EVENT_PATH variable contains the path to the event payload file
+        REPO_INFO=$(echo $GITHUB_REPOSITORY)
+        REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
+        REPO_OWNER=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)
         ISSUE_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
         
-        # Organization name where projects are hosted
-        ORG_NAME="lmu-osc"
+
 
         # Loop through each assignee
         for USER in "${ASSIGNEES_ARRAY[@]}"; do
@@ -57,7 +63,7 @@ jobs:
           echo "Looking for project: $PROJECT_NAME"
           
           # Define the GraphQL query to retrieve the project ID
-          QUERY="{\"query\": \"query { organization(login: \\\"$ORG_NAME\\\") {projectsV2(first: 20) {nodes {id title}}}}\"}"
+          QUERY="{\"query\": \"query { organization(login: \\\"$REPO_OWNER\\\") {projectsV2(first: 20) {nodes {id title}}}}\"}"
 
           # Send the GraphQL query to GitHub API and parse the response
           PROJECT_ID=$(curl -s \
