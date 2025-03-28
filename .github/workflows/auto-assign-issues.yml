@@ -32,7 +32,7 @@ jobs:
         # Output the array as a space-separated string
         echo "::set-output name=assignees_array::${ASSIGNEES_ARRAY[*]}"
         # Print the assignees for debugging
-        echo "Assignees: ${ASSIGNEES_ARRAY[*]}"
+        echo "Assignees array: ${ASSIGNEES_ARRAY[*]}. Assignees original: $ASSIGNEES"
 
     - name: Add Issue to each User's Project Board
       env:
