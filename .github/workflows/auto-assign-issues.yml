@@ -43,7 +43,7 @@ jobs:
       run: |
         # Fetch the list of assignees from the previous step
         ASSIGNEES_ARRAY=(${{ steps.init-assignees.outputs.assignees_array }})
-        REPO=${{ github.repository }}
+        REPO_NAME=${{ github.repository }}
         ISSUE_NUMBER=$(jq --raw-output .issue.number $GITHUB_EVENT_PATH)
         
         # Organization name where projects are hosted
@@ -78,7 +78,7 @@ jobs:
           # Get Node ID for the issue
           NODE_ID_RESULTS=$(curl -X POST \
             -H "Authorization: bearer $GITHUB_TOKEN" \
-            -d "{\"query\": \"query { repository(owner: \\\"$GITHUB_REPOSITORY_OWNER\\\", name: \\\"$GITHUB_REPOSITORY_NAME\\\") { issue(number: $ISSUE_NUMBER) { id } } }\"}" \
+            -d "{\"query\": \"query { repository(owner: \\\"$REPO_OWNER\\\", name: \\\"$REPO_NAME\\\") { issue(number: $ISSUE_NUMBER) { id } } }\"}" \
             https://api.github.com/graphql | jq -r '.data.repository.issue.id')
 
           echo "The results of getting the node ID are: $NODE_ID_RESULTS"
