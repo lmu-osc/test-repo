@@ -40,6 +40,8 @@ jobs:
         # Extract the list of assignees into an array
         IFS=$'\n' read -rd '' -a ASSIGNEES_ARRAY <<< "$ASSIGNEES"
         
+        echo "Assignees: $ASSIGNEES and IFS is $IFS"
+
         # Loop through each assignee
         for USER in "${ASSIGNEES_ARRAY[@]}"; do
           PROJECT_NAME="${USER}'s Tasks"
