@@ -21,12 +21,6 @@ jobs:
         echo "::set-output name=assignees::${ASSIGNEES}"
         echo "Assignees: ${ASSIGNEES}"
 
-    - name: Check if assignees are set
-      run: |
-        if [ -z "${{ steps.get_assignees.outputs.assignees }}" ]; then
-          echo "No assignees to the issue. Skipping project update."
-          exit 0
-        fi
 
     - name: Initialize variables for assignees processing
       id: init-assignees
