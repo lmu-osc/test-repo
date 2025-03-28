@@ -33,7 +33,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.PROJECT_ISSUES_PAT }}
       run: |
         # Fetch the list of assignees from the previous step
-        ASSIGNEES_ARRAY=(${{ steps.init-assignees.outputs.assignees_array }})
+        ASSIGNEES_ARRAY=(${{ steps.get_assignees.outputs.assignees_array }})
 
         # Get the repository information
         # Extract the repository name and owner from the GITHUB_REPOSITORY environment variable
