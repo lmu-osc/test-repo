@@ -27,9 +27,11 @@ jobs:
       run: |
         # Read the assignees from the previous step and convert to an array
         ASSIGNEES="${{ steps.get_assignees.outputs.assignees }}"
-        # Convert the assignees to a space-separated array
-        IFS=' ' read -r -a ASSIGNEES_ARRAY <<< "$ASSIGNEES"
+        # Convert the assignees into an array by splitting by newlines
+        IFS=$'\n' read -r -a ASSIGNEES_ARRAY <<< "$ASSIGNEES"
+        # Output the array as a space-separated string
         echo "::set-output name=assignees_array::${ASSIGNEES_ARRAY[*]}"
+        # Print the assignees for debugging
         echo "Assignees: ${ASSIGNEES_ARRAY[*]}"
 
     - name: Add Issue to each User's Project Board
