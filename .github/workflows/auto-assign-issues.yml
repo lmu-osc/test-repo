@@ -24,13 +24,13 @@ jobs:
         echo "ASSIGNEES=${ASSIGNEES}" >> $GITHUB_ENV
     
         # Convert the assignees into an array using mapfile
-        mapfile -t ASSIGNEES_ARRAY <<< "$ASSIGNEES"
+        # mapfile -t ASSIGNEES_ARRAY <<< "$ASSIGNEES"
         
         # Save the array as a space-separated string to GITHUB_ENV
-        echo "ASSIGNEES_ARRAY=${ASSIGNEES_ARRAY[*]}" >> $GITHUB_ENV
+        # echo "ASSIGNEES_ARRAY=${ASSIGNEES_ARRAY[*]}" >> $GITHUB_ENV
         
         # Print the assignees for debugging
-        echo "Assignees array: ${ASSIGNEES_ARRAY[*]}. Assignees original: $ASSIGNEES"
+        # echo "Assignees array: ${ASSIGNEES_ARRAY[*]}. Assignees original: $ASSIGNEES"
 
         
         
