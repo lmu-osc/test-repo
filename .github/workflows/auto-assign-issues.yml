@@ -18,18 +18,20 @@ jobs:
       run: |
         # Extract the assignees from the issue and format as a space-separated string
         ASSIGNEES=$(jq --raw-output '.issue.assignees[].login' $GITHUB_EVENT_PATH)
-        # Save the assignees to GITHUB_ENV for use in later steps
-        echo "ASSIGNEES=${ASSIGNEES}" >> $GITHUB_ENV
-        echo "${ASSIGNEES}"
+        echo "Assignees: $ASSIGNEES"
         
-        # Convert the assignees into an array
+        # Save the assignees as a space-separated string to GITHUB_ENV
+        echo "ASSIGNEES=${ASSIGNEES}" >> $GITHUB_ENV
+    
+        # Convert the assignees into an array using mapfile
         mapfile -t ASSIGNEES_ARRAY <<< "$ASSIGNEES"
         
-        # Output the array as a space-separated string to GITHUB_ENV
+        # Save the array as a space-separated string to GITHUB_ENV
         echo "ASSIGNEES_ARRAY=${ASSIGNEES_ARRAY[*]}" >> $GITHUB_ENV
         
         # Print the assignees for debugging
         echo "Assignees array: ${ASSIGNEES_ARRAY[*]}. Assignees original: $ASSIGNEES"
+
         
         
     - name: Add Issue to each User's Project Board
